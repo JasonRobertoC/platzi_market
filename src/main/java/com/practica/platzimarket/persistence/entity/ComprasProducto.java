@@ -21,6 +21,8 @@ public class ComprasProducto {
 
 //    Relacion con la entidad Compra
     @ManyToOne
+//    Guardar en cascada
+    @MapsId("idCompra")
 //    name tendra el valor del nombre de la FK
     @JoinColumn(name = "id_compra", insertable = false, updatable = false)
     private Compra compra;

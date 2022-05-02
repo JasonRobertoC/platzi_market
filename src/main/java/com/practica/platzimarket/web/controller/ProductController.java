@@ -43,10 +43,10 @@ public class ProductController {
         return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Product> update(@PathVariable("id") int productId, @RequestBody Product product){
-        return new ResponseEntity<>(productService.save(product), HttpStatus.OK);
-    }
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<Product> update(@PathVariable("id") int productId, @RequestBody Product product){
+//        return new ResponseEntity<>(productService.save(product), HttpStatus.OK);
+//    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity delete(@PathVariable("id") int productId){
