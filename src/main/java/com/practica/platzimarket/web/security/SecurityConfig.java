@@ -1,6 +1,7 @@
 package com.practica.platzimarket.web.security;
 
 import com.practica.platzimarket.domain.service.MarketUserDetailsService;
+import com.practica.platzimarket.web.security.filter.JwtFilterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,11 +10,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MarketUserDetailsService marketUserDetailsService;
+
+    @Autowired
+    private JwtFilterRequest jwtFilterRequest;
 
 //    Indicamos el uso de credenciales propias de MarketUserDetailsService
     @Override
@@ -26,7 +32,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 //        csrf: peticiones cruzadas
         http.csrf().disable().authorizeRequests().antMatchers("/**/authenticate").permitAll()
-                .anyRequest().authenticated();
+                // cualquier otra peticion requiere autenticacion
+                .anyRequest().authenticated().and()
+                // crear session sin estado, jwt se encarga de las peticiones
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        //  agregar el filtro jwt, filtro de usuario y contraseña
+        http.addFilterBefore(jwtFilterRequest, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
